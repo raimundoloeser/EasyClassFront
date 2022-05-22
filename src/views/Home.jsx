@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react'
-import Login from './Login';
-import Register from './Register';
 
 const Home = () => {
     return (
         <Fragment>
-            <Login />
-            <Register />
+            /login 
+            <br />
+            /register
+            <br />
+            /teachers
         </Fragment>
 
                 
