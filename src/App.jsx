@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router, Routes, Route
 } from 'react-router-dom';
 import Home from './views/Home';
+import TeacherList from './views/TeacherList/TeacherList';
 import { ThemeProvider } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import themeEasyClass from './styles/theme';
@@ -25,6 +26,7 @@ const App = () => {
         <div className={classes.containerApp}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/teachers" element={<TeacherList />} />
           </Routes>
         </div>
       </ThemeProvider>

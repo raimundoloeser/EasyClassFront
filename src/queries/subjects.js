@@ -1,8 +1,10 @@
-export default async function communes() {
+import urlsApis from "../helpers/urlApis";
+
+export default async function subjects() {
     // api 
-    const Url = `https://apis.digital.gob.cl/dpa/comunas`;
+    const apiUrl = `${urlsApis("api")}api/subjects/`;
     const fetchResponse = fetch(
-        Url,
+        apiUrl,
         {
             method: 'GET',
             mode: 'cors',
