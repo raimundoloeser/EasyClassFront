@@ -6,12 +6,9 @@ export default async function register(params) {
     const fetchResponse = fetch(
         apiUrl,
         {
-            headers: {
-                'Content-Type': 'application/json',
-            },
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify(params),
+            body: params,
         }
     ).then((response) => {
         return response.json()
