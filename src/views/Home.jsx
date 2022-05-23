@@ -8,6 +8,8 @@ const Home = () => {
             /register
             <br />
             /teachers
+            <br />
+            /teachers/:id/
         </Fragment>
 
                 

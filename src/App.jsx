@@ -9,6 +9,7 @@ import { makeStyles } from '@mui/styles';
 import themeEasyClass from './styles/theme';
 import Login from './views/Login';
 import Register from './views/Register';
+import TeacherProfile from './views/TeacherProfile';
 
 const useStyles = makeStyles(() => ({
   containerApp: {
@@ -28,6 +29,7 @@ const App = () => {
         <div className={classes.containerApp}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/teacher/:id" element={<TeacherProfile />} />
             <Route path="/teachers" element={<TeacherList />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
