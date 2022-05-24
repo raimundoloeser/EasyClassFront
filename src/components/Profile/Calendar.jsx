@@ -15,10 +15,23 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
+import modulesList from '../../queries/modulesList';
 
 const Calendar = (props) => {
     const [teacher, setTeacher] = React.useState({});
     const [loading, setLoading] = React.useState(true);
+    const [modules, setModules] = React.useState([])
+
+    useEffect(() => {
+        modulesList(teacher.id).then(res => {
+            res.forEach(module => {
+                module['startDate'] = module.date + 'T' + module.start_time
+                module['endDate'] = module.date + 'T' + module.end_time
+            })
+            console.log(res);
+            setModules(res)
+        })
+    }, [teacher])
 
     useEffect(() => {
         props.teacher ? setTeacher(props.teacher) : setTeacher({})
@@ -31,14 +44,6 @@ const Calendar = (props) => {
     var mm = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = currentDate.getFullYear();
     currentDate = yyyy + '-' + mm + '-' + dd;
-
-    // aca va mi conexion con la api para tener los datos
-    const schedulerData = [
-        {
-        startDate: '2022-05-25T09:45',
-        endDate: '2022-05-25T11:45',
-        }
-    ];
 
     // checkeo si soy el current user
     const isNormalUser = false
@@ -90,7 +95,7 @@ const Calendar = (props) => {
         <h1 style={{ 'textAlign': 'center' }}>Horario de {teacher.first_name}:</h1>
             <Paper>
             <Scheduler
-            data={schedulerData}
+            data={modules}
             >
 
             <ViewState
