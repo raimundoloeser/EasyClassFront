@@ -2,7 +2,6 @@ import React from 'react';
 
 const TeacherCard = props => {
   const teacher = props.teacher;
-  console.log(teacher);
   return (
     <tr>
         <td>
