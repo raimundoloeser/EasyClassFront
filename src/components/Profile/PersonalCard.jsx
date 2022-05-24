@@ -32,7 +32,7 @@ const PersonalCard = (props) => {
               margin: 'auto' }}
       />
       <h1 style={{ 'textAlign': 'center' }}>{!!teacher && teacher.first_name} {!!teacher && teacher.last_name}</h1>
-      <h3>{!!teacher && teacher.description}</h3>
+      <h3 style={{ 'textAlign': 'center' }}>{!!teacher && teacher.description}</h3>
       <List>
         <ListItem disablePadding>
           <ListItemButton>
