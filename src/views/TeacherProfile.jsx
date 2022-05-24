@@ -11,8 +11,7 @@ import ComunasCard from '../components/Profile/ComunasCard';
 import InstitutionsCard from '../components/Profile/InstitutionsCard';
 import AssignatureCard from '../components/Profile/AssignatureCard';
 import SubjectsCard from '../components/Profile/SubjectsCard';
-
-
+import Calendar from '../components/Profile/Calendar';
 
 const TeacherProfile = () => {
 
@@ -26,7 +25,7 @@ const TeacherProfile = () => {
     })
     setLoading(false)
   }, [id])
-    
+
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -38,6 +37,7 @@ const TeacherProfile = () => {
   
   if (loading) return <CircularProgress />
   return (
+    <>
     <Fragment>
       <Container maxWidth="lg">
         <Box sx={{ flexGrow: 1 }}>
@@ -67,8 +67,10 @@ const TeacherProfile = () => {
             </Grid>
           </Grid>
         </Box>
+        <Calendar teacher={teacher} />
       </Container>
     </Fragment>
+  </>
     
   )
 }
