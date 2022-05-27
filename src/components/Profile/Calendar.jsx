@@ -21,6 +21,7 @@ import createModule from '../../queries/createModule';
 import deleteModule from '../../queries/deleteModule';
 import editModule from '../../queries/editModule';
 import createReservation from '../../queries/createReservation';
+import deleteReservation from '../../queries/deleteReservation';
 
 const Calendar = (props) => {
     const [teacher, setTeacher] = React.useState({});
@@ -159,6 +160,23 @@ const Calendar = (props) => {
                     }}
                   >
                     Reservar Hora
+                  </Button>
+                </AppointmentTooltip.Header>
+              )
+        } else if (localStorage.getItem('is_student') && appointmentData.reservation_bool && parseInt(localStorage.getItem('id')) === appointmentData.student_id){
+            return (
+                <AppointmentTooltip.Header
+                  {...restProps}
+                  appointmentData={appointmentData}
+                >
+                  <Button variant="contained"
+                    color="error"
+                    onClick={() => { 
+                        deleteReservation(appointmentData.reservation_id)
+                        window.location.reload();
+                    }}
+                  >
+                    Cancelar
                   </Button>
                 </AppointmentTooltip.Header>
               )
