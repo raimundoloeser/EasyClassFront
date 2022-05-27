@@ -17,6 +17,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
 import modulesList from '../../queries/modulesList';
 import createModule from '../../queries/createModule';
+import deleteModule from '../../queries/deleteModule';
 
 const Calendar = (props) => {
     const [teacher, setTeacher] = React.useState({});
@@ -28,8 +29,8 @@ const Calendar = (props) => {
     useEffect(() => {
         modulesList(teacher.id).then(res => {
             res.forEach(module => {
-                module['startDate'] = module.date + 'T' + module.start_time
-                module['endDate'] = module.date + 'T' + module.end_time
+                module['startDate'] = new Date(module.date + 'T' + module.start_time)
+                module['endDate'] = new Date(module.date + 'T' + module.end_time)
             })
             console.log(res);
             setModules(res)
@@ -52,8 +53,8 @@ const Calendar = (props) => {
     currentDate = yyyy + '-' + mm + '-' + dd;
 
     // manejo el crear, editar y delete horario
-    const commitChanges = (added, changed, deleted) => {
-        if (added) {
+    const commitChanges = (added) => {
+        if (added.added) {
             let hour_start_time = String(added.added.startDate.getHours()).padStart(2, '0');
             let minute_start_time = String(added.added.startDate.getMinutes()).padStart(2, '0');
             let start_time = hour_start_time + ':' + minute_start_time + ':00';
@@ -66,9 +67,12 @@ const Calendar = (props) => {
             let date = yyyy + '-' + mm + '-' + dd;
             createModule(start_time, end_time, date).then(res => {
                 console.log(res);
-                console.log(localStorage.getItem('id'))
             })
+        } 
+        if (added.deleted) {
+            deleteModule(added.deleted);
         }
+        window.location.reload();
     };
 
     // saco y edito componentes inecesarios
@@ -93,7 +97,7 @@ const Calendar = (props) => {
     };
 
     // cambio el layout
-    const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+    const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => { 
         return (
         <AppointmentForm.BasicLayout
             appointmentData={appointmentData}
@@ -140,7 +144,8 @@ const Calendar = (props) => {
             <Appointments />
             <AppointmentTooltip
                 showCloseButton
-                showOpenButton
+                showOpenButton={!isNormalUser}
+                showDeleteButton={!isNormalUser}
             />
             {!isNormalUser
                 ? <AppointmentForm
