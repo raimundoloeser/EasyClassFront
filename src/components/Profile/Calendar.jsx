@@ -16,11 +16,14 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
 import modulesList from '../../queries/modulesList';
+import createModule from '../../queries/createModule';
 
 const Calendar = (props) => {
     const [teacher, setTeacher] = React.useState({});
     const [loading, setLoading] = React.useState(true);
     const [modules, setModules] = React.useState([])
+    // checkeo si soy el current user
+    const [isNormalUser, setIsNormalUser] = React.useState(true)
 
     useEffect(() => {
         modulesList(teacher.id).then(res => {
@@ -31,6 +34,9 @@ const Calendar = (props) => {
             console.log(res);
             setModules(res)
         })
+        if (teacher && teacher.id) {
+            setIsNormalUser(localStorage.getItem('id') !== teacher.id.toString())
+        }
     }, [teacher])
 
     useEffect(() => {
@@ -39,18 +45,30 @@ const Calendar = (props) => {
     }, [props.teacher]);
 
     // obtengo el dia actual
-    var currentDate = new Date();
-    var dd = String(currentDate.getDate()).padStart(2, '0');
-    var mm = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = currentDate.getFullYear();
+    let currentDate = new Date();
+    let dd = String(currentDate.getDate()).padStart(2, '0');
+    let mm = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = currentDate.getFullYear();
     currentDate = yyyy + '-' + mm + '-' + dd;
-
-    // checkeo si soy el current user
-    const isNormalUser = false
 
     // manejo el crear, editar y delete horario
     const commitChanges = (added, changed, deleted) => {
-        console.log(added);
+        if (added) {
+            let hour_start_time = String(added.added.startDate.getHours()).padStart(2, '0');
+            let minute_start_time = String(added.added.startDate.getMinutes()).padStart(2, '0');
+            let start_time = hour_start_time + ':' + minute_start_time + ':00';
+            let hour_end_time = String(added.added.endDate.getHours()).padStart(2, '0');
+            let minute_end_time = String(added.added.endDate.getMinutes()).padStart(2, '0');
+            let end_time = hour_end_time + ':' + minute_end_time + ':00';
+            let dd = String(added.added.startDate.getDate()).padStart(2, '0');
+            let mm = String(added.added.startDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = added.added.startDate.getFullYear();
+            let date = yyyy + '-' + mm + '-' + dd;
+            createModule(start_time, end_time, date).then(res => {
+                console.log(res);
+                console.log(localStorage.getItem('id'))
+            })
+        }
     };
 
     // saco y edito componentes inecesarios
@@ -124,13 +142,23 @@ const Calendar = (props) => {
                 showCloseButton
                 showOpenButton
             />
-            <AppointmentForm
+            {!isNormalUser
+                ? <AppointmentForm
                 readOnly={isNormalUser}
                 basicLayoutComponent={BasicLayout}
                 booleanEditorComponent={BoolEditor}
                 labelComponent={LabelComponent}
                 textEditorComponent={InputComponent}
-            />
+                />
+                : <AppointmentForm
+                readOnly={isNormalUser}
+                visible={false}
+                basicLayoutComponent={BasicLayout}
+                booleanEditorComponent={BoolEditor}
+                labelComponent={LabelComponent}
+                textEditorComponent={InputComponent}
+                />
+            }
             </Scheduler>
         </Paper>
         <br />

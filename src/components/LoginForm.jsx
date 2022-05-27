@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import login from '../queries/login'
+import myInfo from '../queries/myInfo'
 import { 
         Alert,
         CircularProgress,
@@ -54,6 +55,9 @@ const LoginForm = () => {
                     // set current user
                     localStorage.setItem('access-token', val.access)
                     localStorage.setItem('refresh-token', val.refresh)
+                    myInfo().then((val) => {
+                        localStorage.setItem('id', val.id)
+                    })
                     return val
                 } else {
                     setFailureMessage("Usuario o contraseña incorrectos")
