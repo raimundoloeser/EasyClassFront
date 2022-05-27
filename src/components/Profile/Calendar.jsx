@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import modulesList from '../../queries/modulesList';
 import createModule from '../../queries/createModule';
 import deleteModule from '../../queries/deleteModule';
+import editModule from '../../queries/editModule';
 
 const Calendar = (props) => {
     const [teacher, setTeacher] = React.useState({});
@@ -71,6 +72,9 @@ const Calendar = (props) => {
         } 
         if (added.deleted) {
             deleteModule(added.deleted);
+        }
+        if (added.changed) {
+            editModule(added.changed);
         }
         window.location.reload();
     };
