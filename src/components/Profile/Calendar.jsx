@@ -105,7 +105,20 @@ const Calendar = (props) => {
     const Appointment = ({
         children, style, ...restProps
       }) => {
-            if (restProps.data.reservation_bool){
+            if (restProps.data.reservation_bool && parseInt(localStorage.getItem('id')) === restProps.data.student_id){
+                return (
+                <Appointments.Appointment
+                    {...restProps}
+                    style={{
+                    ...style,
+                    backgroundColor: '#16e00b',
+                    }}
+                >
+                    <p style={{ 'textAlign': 'center', 'color': 'white' }}> {'Reservado por mi'} </p>
+                    {children}
+                </Appointments.Appointment>
+                )
+            } else if (restProps.data.reservation_bool){
                 return (
                 <Appointments.Appointment
                     {...restProps}
@@ -114,10 +127,12 @@ const Calendar = (props) => {
                     backgroundColor: '#FB8B8B',
                     }}
                 >
+                    <p style={{ 'textAlign': 'center', 'color': 'white' }}> {'No Disponible'} </p>
                     {children}
                 </Appointments.Appointment>
                 )
             } else {
+                console.log(children)
                 return (
                 <Appointments.Appointment
                     {...restProps}
@@ -125,6 +140,7 @@ const Calendar = (props) => {
                     ...style,
                     }}
                 >
+                    <p style={{ 'textAlign': 'center', 'color': 'white' }}> {'Disponible'} </p>
                     {children}
                 </Appointments.Appointment>
                 )
