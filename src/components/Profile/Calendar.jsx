@@ -14,11 +14,13 @@ import {
   ConfirmationDialog
 } from '@devexpress/dx-react-scheduler-material-ui';
 import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import modulesList from '../../queries/modulesList';
 import createModule from '../../queries/createModule';
 import deleteModule from '../../queries/deleteModule';
 import editModule from '../../queries/editModule';
+import createReservation from '../../queries/createReservation';
 
 const Calendar = (props) => {
     const [teacher, setTeacher] = React.useState({});
@@ -99,6 +101,34 @@ const Calendar = (props) => {
         return null
         }
     };
+    const Appointment = ({
+        children, style, ...restProps
+      }) => {
+            if (restProps.data.reservation_bool){
+                return (
+                <Appointments.Appointment
+                    {...restProps}
+                    style={{
+                    ...style,
+                    backgroundColor: '#FB8B8B',
+                    }}
+                >
+                    {children}
+                </Appointments.Appointment>
+                )
+            } else {
+                return (
+                <Appointments.Appointment
+                    {...restProps}
+                    style={{
+                    ...style,
+                    }}
+                >
+                    {children}
+                </Appointments.Appointment>
+                )
+            }
+    }
 
     // cambio el layout
     const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => { 
@@ -111,6 +141,37 @@ const Calendar = (props) => {
         </AppointmentForm.BasicLayout>
         );
     };
+    const Header = ({
+        children, appointmentData, ...restProps
+      }) => {
+        if (localStorage.getItem('is_student') && !appointmentData.reservation_bool){
+            return (
+                <AppointmentTooltip.Header
+                  {...restProps}
+                  appointmentData={appointmentData}
+                >
+                  <Button variant="contained"
+                    onClick={() => { 
+                        createReservation(appointmentData.id).then(res => {
+                            console.log(res);
+                            window.location.reload();
+                        })
+                    }}
+                  >
+                    Reservar Hora
+                  </Button>
+                </AppointmentTooltip.Header>
+              )
+        } else {
+            return (
+                <AppointmentTooltip.Header
+                  {...restProps}
+                  appointmentData={appointmentData}
+                >
+                </AppointmentTooltip.Header>
+              )
+        }
+      };
 
 
     if (loading) return <CircularProgress />
@@ -145,9 +206,12 @@ const Calendar = (props) => {
             <TodayButton />
             <ViewSwitcher />
             <ConfirmationDialog />
-            <Appointments />
+            <Appointments
+            appointmentComponent={Appointment} 
+            />
             <AppointmentTooltip
-                showCloseButton
+                headerComponent={Header}
+                showCloseButton={!isNormalUser}
                 showOpenButton={!isNormalUser}
                 showDeleteButton={!isNormalUser}
             />

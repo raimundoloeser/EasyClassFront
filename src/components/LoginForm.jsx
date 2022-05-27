@@ -57,6 +57,7 @@ const LoginForm = () => {
                     localStorage.setItem('refresh-token', val.refresh)
                     myInfo().then((val) => {
                         localStorage.setItem('id', val.id)
+                        localStorage.setItem('is_student', val.is_student)
                     })
                     return val
                 } else {
