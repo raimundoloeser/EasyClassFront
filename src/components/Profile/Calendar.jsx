@@ -36,7 +36,6 @@ const Calendar = (props) => {
                 module['startDate'] = new Date(module.date + 'T' + module.start_time)
                 module['endDate'] = new Date(module.date + 'T' + module.end_time)
             })
-            console.log(res);
             setModules(res)
         })
         if (teacher && teacher.id) {
@@ -70,7 +69,6 @@ const Calendar = (props) => {
             let yyyy = added.added.startDate.getFullYear();
             let date = yyyy + '-' + mm + '-' + dd;
             createModule(start_time, end_time, date).then(res => {
-                console.log(res);
             })
         } 
         if (added.deleted) {
@@ -132,7 +130,6 @@ const Calendar = (props) => {
                 </Appointments.Appointment>
                 )
             } else {
-                console.log(children)
                 return (
                 <Appointments.Appointment
                     {...restProps}
@@ -170,7 +167,6 @@ const Calendar = (props) => {
                   <Button variant="contained"
                     onClick={() => { 
                         createReservation(appointmentData.id).then(res => {
-                            console.log(res);
                             window.location.reload();
                         })
                     }}
