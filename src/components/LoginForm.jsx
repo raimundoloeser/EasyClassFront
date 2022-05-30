@@ -47,7 +47,6 @@ const LoginForm = () => {
         setLoading(true)
         login(user).then(val => {
             if (val) {
-                console.log(val)
                 if (val.access) {
                     setSuccessMessage("Usuario ingresado con éxito")
                     setFailureMessage(null)
@@ -56,6 +55,7 @@ const LoginForm = () => {
                     localStorage.setItem('access-token', val.access)
                     localStorage.setItem('refresh-token', val.refresh)
                     myInfo().then((val) => {
+                        localStorage.setItem('user', JSON.stringify(val))
                         localStorage.setItem('id', val.id)
                         localStorage.setItem('is_student', val.is_student)
                     })
@@ -64,12 +64,19 @@ const LoginForm = () => {
                     setFailureMessage("Usuario o contraseña incorrectos")
                     setError(val)
                 }
-                    setLoading(null)
+                setLoading(null)
+                return val
             } else {
                 setLoading(null)
                 setError('Error al iniciar sesión')
             }
-        })
+            return val
+        }).then( val => {
+            console.log(val)
+            if (val.access) {
+                window.location.href = '/teachers'
+            }})
+
     }
     if (loading) return <CircularProgress />
     return (

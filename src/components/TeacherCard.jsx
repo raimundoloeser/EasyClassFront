@@ -11,7 +11,7 @@ const TeacherCard = props => {
         </td>
         <td>
             <div className="widget-26-job-title">
-                <a href="#">{teacher.first_name + ' ' + teacher.last_name}</a>
+                <a href={`teacher/${teacher.id}`}>{teacher.first_name + ' ' + teacher.last_name}</a>
                 <p className="m-0 employer-name text-muted time"> {'He trabajado con alumnos de: ' + teacher.institutions}</p>
             </div>
         </td>

@@ -19,7 +19,8 @@ import { Typography } from '@mui/material';
 
 
 
-const RegisterForm = () => {
+const RegisterForm = (props) => {
+    const isTeacher = props.isTeacher
     const [successMessage, setSuccessMessage] = useState(null)
     const [failureMessage, setFailureMessage] = useState(null)
     const [comunasSelected, setComunasSelected] = useState([])
@@ -81,8 +82,9 @@ const RegisterForm = () => {
         formData.append("comunas", user.comunas || '');
         formData.append("price", user.price || 0);
         formData.append("description", user.description || '');
-        formData.append("picture", user.picture || null);
+        user.picture && formData.append("picture", user.picture);
         formData.append("is_teacher", user.is_teacher);
+        formData.append("is_student", user.is_student);
 
 
         register(formData).then(val => {
@@ -145,74 +147,79 @@ const RegisterForm = () => {
                         helpertext={(!!error && !!error.phone && error.phone[0]) || undefined}
                     />
                 </FormControl>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.comunas) || undefined}>
-                    
-                    <Autocomplete
-                        multiple
-                        disablePortal
-                        value={comunasSelected ? comunasSelected : null}
-                        id="comunas"
-                        limitTags={3}
-                        options={communes}
-                        getOptionLabel={(option) => option.nombre}
-                        isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
-                        onChange={(event, newValue) => {
-                            setValues({ 
-                                        ...values, 
-                                        'comunas': [newValue.map(function(val) {return val.nombre;})].join(',') 
-                                    });
-                            setComunasSelected(newValue)
-                          }}
-                        renderInput={(params) => <TextField {...params} label="Comunas" />}
-                        helpertext={(!!error && !!error.comunas && error.comunas[0]) || undefined}
-                    />
-                </FormControl>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.subjects) || undefined}>
-                    
-                    <Autocomplete
-                        multiple
-                        freeSolo
-                        value={(!!values.subjects && values.subjects.split(',')) || []}
-                        id="subjects"
-                        limitTags={3}
-                        options={[]}
-                        onChange={(event, newValue) => {
-                            setValues({ ...values, 'subjects': newValue.join(',') });
-                          }}
-                        getOptionLabel={(option) => option}
-                        renderInput={(params) => <TextField {...params} label="Materias" />}
-                        helpertext={(!!error && !!error.subjects && error.subjects[0]) || undefined}
-                    />
-                </FormControl>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.institutions) || undefined}>
-                    
-                    <Autocomplete
-                        multiple
-                        freeSolo
-                        id="institutions"
-                        value={(!!values.institutions && values.institutions.split(',')) || []}
-                        limitTags={3}
-                        options={[]}
-                        onChange={(event, newValue) => {
-                            setValues({ ...values, 'institutions': newValue.join(',') });
-                          }}
-                        getOptionLabel={(option) => option}
-                        renderInput={(params) => <TextField {...params} label="Instituciones" />}
-                        helpertext={(!!error && !!error.institutions && error.institutions[0]) || undefined}
-                    />
-                </FormControl>
-                <TextField
-                    error={!!error && !!error.precio}
-                    label="Precio"
-                    id="precio"
-                    value={values.price}
-                    onChange={handleChange('price')}
-                    sx={{ m: 1, width: '25ch' }}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
-                    helpertext={(!!error && !!error.precio && error.precio[0]) || undefined}
-                />
+                 {isTeacher && (
+                     <>
+                        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.comunas) || undefined}>
+                        
+                        <Autocomplete
+                            multiple
+                            disablePortal
+                            value={comunasSelected ? comunasSelected : null}
+                            id="comunas"
+                            limitTags={3}
+                            options={communes}
+                            getOptionLabel={(option) => option.nombre}
+                            isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
+                            onChange={(event, newValue) => {
+                                setValues({ 
+                                            ...values, 
+                                            'comunas': [newValue.map(function(val) {return val.nombre;})].join(',') 
+                                        });
+                                setComunasSelected(newValue)
+                            }}
+                            renderInput={(params) => <TextField {...params} label="Comunas" />}
+                            helpertext={(!!error && !!error.comunas && error.comunas[0]) || undefined}
+                        />
+                        </FormControl>
+                        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.subjects) || undefined}>
+                            
+                            <Autocomplete
+                                multiple
+                                freeSolo
+                                value={(!!values.subjects && values.subjects.split(',')) || []}
+                                id="subjects"
+                                limitTags={3}
+                                options={[]}
+                                onChange={(event, newValue) => {
+                                    setValues({ ...values, 'subjects': newValue.join(',') });
+                                }}
+                                getOptionLabel={(option) => option}
+                                renderInput={(params) => <TextField {...params} label="Materias" />}
+                                helpertext={(!!error && !!error.subjects && error.subjects[0]) || undefined}
+                            />
+                        </FormControl>
+                        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.institutions) || undefined}>
+                            
+                            <Autocomplete
+                                multiple
+                                freeSolo
+                                id="institutions"
+                                value={(!!values.institutions && values.institutions.split(',')) || []}
+                                limitTags={3}
+                                options={[]}
+                                onChange={(event, newValue) => {
+                                    setValues({ ...values, 'institutions': newValue.join(',') });
+                                }}
+                                getOptionLabel={(option) => option}
+                                renderInput={(params) => <TextField {...params} label="Instituciones" />}
+                                helpertext={(!!error && !!error.institutions && error.institutions[0]) || undefined}
+                            />
+                        </FormControl>
+                        <TextField
+                            error={!!error && !!error.precio}
+                            label="Precio"
+                            id="precio"
+                            value={values.price}
+                            onChange={handleChange('price')}
+                            sx={{ m: 1, width: '25ch' }}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            }}
+                            helpertext={(!!error && !!error.precio && error.precio[0]) || undefined}
+                        />
+                     </>
+                 )}
+                
                 <TextField
                     error={!!error && !!error.descripcion}
                     label="Descripción"

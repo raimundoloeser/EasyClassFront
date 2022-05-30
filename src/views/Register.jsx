@@ -2,7 +2,7 @@ import React from 'react'
 import RegisterForm from '../components/RegisterForm';
 import { Card, CardContent, Grid } from '@mui/material';
 
-const Register = () => {
+const Register = (props) => {
     return (
         <Grid
             container
@@ -17,7 +17,7 @@ const Register = () => {
                     variant="outlined"
                     sx={{ maxWidth: 600 }}>
                     <CardContent sx={{ minWidth: 475 }}>
-                        <RegisterForm />
+                        <RegisterForm isTeacher={props.isTeacher}/>
                     </CardContent>
                 </Card>
             </Grid>   
