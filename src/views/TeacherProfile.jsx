@@ -9,7 +9,6 @@ import { CircularProgress, Container } from '@mui/material';
 import PersonalCard from '../components/Profile/PersonalCard';
 import ComunasCard from '../components/Profile/ComunasCard';
 import InstitutionsCard from '../components/Profile/InstitutionsCard';
-import AssignatureCard from '../components/Profile/AssignatureCard';
 import SubjectsCard from '../components/Profile/SubjectsCard';
 import Calendar from '../components/Profile/Calendar';
 
@@ -50,10 +49,6 @@ const TeacherProfile = () => {
             <Grid item xs={4}>
               <Item>
                 <ComunasCard comunas={!!teacher && teacher.comunas} />
-              </Item>
-              <br></br>
-              <Item>
-                <AssignatureCard assignature={!!teacher && teacher.assignature} />
               </Item>
             </Grid>
             <Grid item xs={4}>

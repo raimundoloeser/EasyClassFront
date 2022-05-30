@@ -10,6 +10,7 @@ import themeEasyClass from './styles/theme';
 import Login from './views/Login';
 import Register from './views/Register';
 import TeacherProfile from './views/TeacherProfile';
+import ResponsiveAppBar from './components/Navbar/Navbar';
 
 const useStyles = makeStyles(() => ({
   containerApp: {
@@ -23,8 +24,8 @@ const App = () => {
 
   const classes = useStyles()
   return (
-
     <Router>
+      <ResponsiveAppBar />
       <ThemeProvider theme={themeEasyClass}>
         <div className={classes.containerApp}>
           <Routes>
@@ -32,7 +33,8 @@ const App = () => {
             <Route path="/teacher/:id" element={<TeacherProfile />} />
             <Route path="/teachers" element={<TeacherList />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register/teacher" element={<Register isTeacher={true}/>} />
+            <Route path="/register/student" element={<Register isTeacher={false}/>} />
           </Routes>
         </div>
       </ThemeProvider>
