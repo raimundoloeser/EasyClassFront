@@ -2,13 +2,13 @@ import React, { Fragment } from 'react'
 
 const Home = () => {
     return (
-        <Fragment>
+        <div>
+
             /login 
-            <br />
             /register
-            <br />
             /teachers
-        </Fragment>
+            /teachers/:id/
+        </div>
 
                 
     )
