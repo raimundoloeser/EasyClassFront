@@ -161,7 +161,7 @@ const Calendar = (props) => {
     const Header = ({
         children, appointmentData, ...restProps
       }) => {
-        if (localStorage.getItem('is_student') && !appointmentData.reservation_bool){
+        if (localStorage.getItem('is_student') === 'true' && !appointmentData.reservation_bool){
             return (
                 <AppointmentTooltip.Header
                   {...restProps}
@@ -179,7 +179,7 @@ const Calendar = (props) => {
                   </Button>
                 </AppointmentTooltip.Header>
               )
-        } else if (localStorage.getItem('is_student') && appointmentData.reservation_bool && parseInt(localStorage.getItem('id')) === appointmentData.student_id){
+        } else if (localStorage.getItem('is_student') === 'true' && appointmentData.reservation_bool && parseInt(localStorage.getItem('id')) === appointmentData.student_id){
             return (
                 <AppointmentTooltip.Header
                   {...restProps}
