@@ -14,7 +14,7 @@ import {
         TextField,
         Autocomplete,
  } from '@mui/material';
-import { VisibilityOff, Visibility, HowToReg, FileUpload } from '@mui/icons-material';
+import { VisibilityOff, Visibility, HowToReg, FileUpload, FormatListNumberedRtlRounded } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 
 
@@ -33,13 +33,13 @@ const RegisterForm = () => {
         "password2": "",
         "phone": "",
         "comunas": "",
-        "assignature": "",
         "subjects": "",
         "institutions": "",
         "price": 0,
         "description": "",
         "picture": null,
-        "is_teacher": false
+        "is_teacher": false,
+        "is_student": true
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -76,7 +76,6 @@ const RegisterForm = () => {
         formData.append("password2", user.password2 || '');
         formData.append("phone", user.phone || '');
         formData.append("comunas", user.comunas || '');
-        formData.append("assignature", user.assignature || '');
         formData.append("subjects", user.subjects || '');
         formData.append("institutions", user.institutions || '');
         formData.append("comunas", user.comunas || '');
@@ -166,23 +165,6 @@ const RegisterForm = () => {
                           }}
                         renderInput={(params) => <TextField {...params} label="Comunas" />}
                         helpertext={(!!error && !!error.comunas && error.comunas[0]) || undefined}
-                    />
-                </FormControl>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.assignature) || undefined}>
-                    
-                    <Autocomplete
-                        multiple
-                        freeSolo
-                        value={(!!values.assignature && values.assignature.split(',')) || []}
-                        id="assignature"
-                        limitTags={3}
-                        options={[]}
-                        onChange={(event, newValue) => {
-                            setValues({ ...values, 'assignature': newValue.join(',') });
-                          }}
-                        getOptionLabel={(option) => option}
-                        renderInput={(params) => <TextField {...params} label="Ramos" />}
-                        helpertext={(!!error && !!error.assignature && error.assignature[0]) || undefined}
                     />
                 </FormControl>
                 <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.subjects) || undefined}>
