@@ -13,6 +13,16 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import myInfo from '../../queries/myInfo'
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(() => ({
+  logo_container: {
+    height: '68.5px',
+  },
+  logo: {
+    height: '100%',
+  }
+}));
 
 const pages = [
   { id: 1, name: 'Home', href: '/' },
@@ -30,6 +40,7 @@ const teacherSettings = ['Profile', 'Logout'];
 const studentSettings = ['Logout'];
 
 const ResponsiveAppBar = () => {
+  const classes = useStyles()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [logged, setLogged] = React.useState(false);
@@ -99,27 +110,12 @@ const ResponsiveAppBar = () => {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
+      <Container maxWidth="100%">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+          <IconButton className = {classes.logo_container} onClick={() => handleHref('/')}>
+              <img src={'img/logo4.png'} alt="logo" className={classes.logo}/>
+          </IconButton>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"

@@ -21,6 +21,7 @@ import { Typography } from '@mui/material';
 
 const RegisterForm = (props) => {
     const isTeacher = props.isTeacher
+    const isStudent = !isTeacher
     const [successMessage, setSuccessMessage] = useState(null)
     const [failureMessage, setFailureMessage] = useState(null)
     const [comunasSelected, setComunasSelected] = useState([])
@@ -39,8 +40,8 @@ const RegisterForm = (props) => {
         "price": 0,
         "description": "",
         "picture": null,
-        "is_teacher": false,
-        "is_student": true
+        "is_teacher": isTeacher,
+        "is_student": isStudent
     });
 
     const [showPassword, setShowPassword] = useState(false);
