@@ -94,6 +94,7 @@ const RegisterForm = (props) => {
                     setSuccessMessage("Usuario creado con éxito")
                     setLoading(null)
                     setFailureMessage(null)
+                    window.location.href = '/login'
                     // set current user
                     localStorage.setItem('user', JSON.stringify(val))
                     return val
