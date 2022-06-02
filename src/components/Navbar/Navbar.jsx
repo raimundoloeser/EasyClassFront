@@ -112,7 +112,6 @@ const ResponsiveAppBar = () => {
     <AppBar position="static">
       <Container maxWidth="100%">
         <Toolbar disableGutters>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
           <IconButton className = {classes.logo_container} onClick={() => handleHref('/')}>
               <img src={'img/logo4.png'} alt="logo" className={classes.logo}/>
           </IconButton>
