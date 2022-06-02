@@ -100,7 +100,7 @@ const Home = () => {
                             <Button variant="contained" style={{marginRight: 10}} className={classes.button} href='/register/teacher'>Registro Profesores</Button>
                             <Button variant="contained" href='/register/student'>Registro Alumnos</Button>
                         </div> 
-                        <Button variant="contained">Inicio Sesión</Button>
+                        <Button variant="contained" href= '/login'>Inicio Sesión</Button>
                     </div> 
                 ) : (
                     <Button variant="contained" href='/teachers'>Buscar Profesores</Button>    
