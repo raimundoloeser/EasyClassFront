@@ -21,6 +21,7 @@ const useStyles = makeStyles(() => ({
   },
   logo: {
     height: '100%',
+    marginBottom: '10px'
   }
 }));
 
@@ -113,7 +114,7 @@ const ResponsiveAppBar = () => {
       <Container maxWidth="100%">
         <Toolbar disableGutters>
           <IconButton className = {classes.logo_container} onClick={() => handleHref('/')}>
-              <img src={'img/logo4.png'} alt="logo" className={classes.logo}/>
+              <img src={'../img/logo4.png'} alt="logo" className={classes.logo}/>
           </IconButton>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
