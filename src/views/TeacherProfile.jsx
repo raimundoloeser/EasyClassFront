@@ -11,6 +11,8 @@ import ComunasCard from '../components/Profile/ComunasCard';
 import InstitutionsCard from '../components/Profile/InstitutionsCard';
 import SubjectsCard from '../components/Profile/SubjectsCard';
 import Calendar from '../components/Profile/Calendar';
+import CommentSection from '../components/Profile/CommentSection';
+import AddComment from '../components/Profile/AddComment';
 
 const TeacherProfile = () => {
 
@@ -63,6 +65,8 @@ const TeacherProfile = () => {
           </Grid>
         </Box>
         <Calendar teacher={teacher} />
+        <AddComment />
+        <CommentSection />
       </Container>
     </Fragment>
   </>
