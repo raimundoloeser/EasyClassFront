@@ -207,7 +207,7 @@ const RegisterForm = (props) => {
                             />
                         </FormControl>
                         <TextField
-                            error={!!error && !!error.precio}
+                            error={(!!error && !!error.precio) || values.price > 99999 }
                             label="Precio"
                             id="precio"
                             value={values.price}
