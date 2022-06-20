@@ -38,7 +38,7 @@ const pagesLogOut = [
   ];
 const teacherSettings = ['Profile', 'Logout'];
 
-const studentSettings = ['Logout'];
+const studentSettings = ['Calendario', 'Logout'];
 
 const ResponsiveAppBar = () => {
   const classes = useStyles()
@@ -86,6 +86,9 @@ const ResponsiveAppBar = () => {
     switch (setting) {
       case 'Profile':
         window.location.href = '/teacher/' + user.id;
+        break
+      case 'Calendario':
+        window.location.href = '/mycalendar/';
         break
       case 'Logout':
         logout()
