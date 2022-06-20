@@ -39,7 +39,7 @@ const Calendar = (props) => {
             setModules(res)
         })
         if (teacher && teacher.id) {
-            setIsNormalUser(localStorage.getItem('id') !== teacher.id.toString())
+            setIsNormalUser(JSON.parse(localStorage.user).id !== teacher.id.toString())
         }
     }, [teacher])
 
@@ -103,7 +103,7 @@ const Calendar = (props) => {
     const Appointment = ({
         children, style, ...restProps
       }) => {
-            if (restProps.data.reservation_bool && parseInt(localStorage.getItem('id')) === restProps.data.student_id){
+            if (restProps.data.reservation_bool && JSON.parse(localStorage.user).id === restProps.data.student_id){
                 return (
                 <Appointments.Appointment
                     {...restProps}
@@ -158,7 +158,7 @@ const Calendar = (props) => {
     const Header = ({
         children, appointmentData, ...restProps
       }) => {
-        if (localStorage.getItem('is_student') === 'true' && !appointmentData.reservation_bool){
+        if (JSON.parse(localStorage.user).is_student && !appointmentData.reservation_bool){
             return (
                 <AppointmentTooltip.Header
                   {...restProps}
@@ -175,7 +175,7 @@ const Calendar = (props) => {
                   </Button>
                 </AppointmentTooltip.Header>
               )
-        } else if (localStorage.getItem('is_student') === 'true' && appointmentData.reservation_bool && parseInt(localStorage.getItem('id')) === appointmentData.student_id){
+        } else if (JSON.parse(localStorage.user).is_student && appointmentData.reservation_bool && JSON.parse(localStorage.user).id === appointmentData.student_id){
             return (
                 <AppointmentTooltip.Header
                   {...restProps}
