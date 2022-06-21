@@ -13,7 +13,7 @@ import {
     AppointmentForm,
     ConfirmationDialog
   } from '@devexpress/dx-react-scheduler-material-ui';
-  import { CircularProgress, Container } from '@mui/material';
+  import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import modulesListStudent from '../queries/modulesListStudent';
