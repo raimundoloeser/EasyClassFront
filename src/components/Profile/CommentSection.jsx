@@ -45,15 +45,17 @@ export default function CommentSection(props) {
 
   useEffect(() => {
     let suma = 0;
-    let newEstrellas = {...estrellas };
+    let newEstrellas = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
     console.log(comments)
     for (let i = 0; i < comments.length; i++) {
       suma += comments[i].rating;
       newEstrellas[comments[i].rating] += 1;
     }
     setEstrellas(newEstrellas);
-    setPromedio(parseInt(suma/comments.length))
+    setPromedio(parseInt(suma/comments.length));
   }, [comments]);
+
+  console.log(estrellas);
 
   return (
     <>
