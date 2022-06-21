@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react'
 import './TeacherList.css';
 import { default as getCommunes }  from '../../queries/communes';
+import myInfo from '../../queries/myInfo'
 import { default as getSubjects }  from '../../queries/subjects';
 import { default as getInstitutions }  from '../../queries/institutions';
 import { default as getTeachers }  from '../../queries/teachersList';
@@ -25,6 +26,11 @@ const TeacherList = () => {
     const [teachers, setTeachers] = useState([]);
 
     useEffect(() => {
+        myInfo().then((val) => {
+            localStorage.setItem('user', JSON.stringify(val))
+            localStorage.setItem('id', val.id)
+            localStorage.setItem('is_student', val.is_student)
+        })
         if (communes.length !== 0) return
         getCommunes().then(res => {
             setCommunes(res)

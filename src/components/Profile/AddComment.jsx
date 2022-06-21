@@ -1,21 +1,35 @@
-import { Fragment, useState } from 'react'
-import { StarIcon, EmojiHappyIcon } from '@heroicons/react/solid'
+import { Fragment, useState, useEffect } from 'react'
+import { StarIcon } from '@heroicons/react/solid'
 import { Listbox, Transition } from '@headlessui/react'
+import createComment from '../../queries/createComment';
 
 const moods = [
-  { name: '1 Estrella', value: 'excited', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-red-500' },
-  { name: '2 Estrella', value: 'loved', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-orange-400' },
-  { name: '3 Estrella', value: 'happy', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-yellow-400' },
-  { name: '4 Estrella', value: 'sad', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-green-300' },
-  { name: '5 Estrella', value: 'thumbsy', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-green-500' }
+  { name: '1 Estrella', value: '1', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-red-500' },
+  { name: '2 Estrella', value: '2', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-orange-400' },
+  { name: '3 Estrella', value: '3', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-yellow-400' },
+  { name: '4 Estrella', value: '4', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-green-300' },
+  { name: '5 Estrella', value: '5', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-green-500' }
 ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
-  const [selected, setSelected] = useState(moods[2])
+export default function AddComment(props) {
+    const [teacher, setTeacher] = useState({});
+    const [selected, setSelected] = useState(moods[2])
+    const [body, setBody] = useState('')
+
+
+    useEffect(() => {
+        props.teacher ? setTeacher(props.teacher) : setTeacher({})
+    }, [props.teacher]);
+
+    useEffect(() => {
+        console.log(selected)
+        console.log(body)
+    }, [selected, body])
+
 
   return (
     <div className="flex items-start space-x-4">
@@ -27,18 +41,19 @@ export default function Example() {
         />
       </div>
       <div className="min-w-0 flex-1">
-        <form action="#" className="relative">
-          <div className="border border-gray-300 rounded-lg shadow-sm overflow-hidden focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
+        <div className="relative">
+          <div className="border border-gray-300 rounded-lg shadow-sm overflow-hidden ">
             <label htmlFor="comment" className="sr-only">
-              Add your comment
+              Agrega tu comentario
             </label>
             <textarea
               rows={3}
               name="comment"
               id="comment"
-              className="block w-full py-3 border-0 resize-none focus:ring-0 sm:text-sm"
-              placeholder="Add your comment..."
-              defaultValue={''}
+              className="block w-full py-3 border-0 resize-none sm:text-sm p-4"
+              placeholder="Agrega tu comentario (solo podras agregar un comentario con una reserva)..."
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
             />
 
             {/* Spacer element to match the height of the toolbar */}
@@ -128,12 +143,13 @@ export default function Example() {
               <button
                 type="submit"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={() => {createComment(body, parseInt(selected.value), teacher.id)}}
               >
-                Post
+                Comentar
               </button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
