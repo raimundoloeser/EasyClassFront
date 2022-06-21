@@ -55,7 +55,7 @@ const PersonalCard = (props) => {
               <ListItemIcon>
               <AttachMoneyIcon />
               </ListItemIcon>
-              <ListItemText primary={!!teacher && teacher.price} />
+              <ListItemText primary={!!teacher && teacher.price + " / hora"} />
           </ListItemButton>
         </ListItem>
       </List>
