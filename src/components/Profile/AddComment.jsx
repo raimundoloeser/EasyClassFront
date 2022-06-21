@@ -143,7 +143,8 @@ export default function AddComment(props) {
               <button
                 type="submit"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                onClick={() => {createComment(body, parseInt(selected.value), teacher.id)}}
+                onClick={() => {createComment(body, parseInt(selected.value), teacher.id, JSON.parse(localStorage.user).picture, JSON.parse(localStorage.user).first_name);
+                  window.location.reload();}}
               >
                 Comentar
               </button>

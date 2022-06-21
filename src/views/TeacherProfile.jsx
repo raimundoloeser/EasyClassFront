@@ -66,7 +66,7 @@ const TeacherProfile = () => {
         </Box>
         <Calendar teacher={teacher} />
         <AddComment teacher={teacher}/>
-        <CommentSection />
+        <CommentSection teacher={teacher}/>
       </Container>
     </Fragment>
   </>

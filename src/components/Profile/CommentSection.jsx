@@ -1,5 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { StarIcon } from '@heroicons/react/solid'
+import Comments from '../../queries/comments';
+import { Fragment, useState, useEffect } from 'react'
 
 const reviews = {
   average: 4,
@@ -30,7 +32,29 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function CommentSection(props) {
+  const [comments, setComments] = useState([]);
+  const [promedio, setPromedio] = useState('');
+  const [estrellas, setEstrellas] = useState({1: 0, 2: 0, 3: 0, 4: 0, 5: 0});
+
+  useEffect(() => {
+    props.teacher ? Comments(props.teacher.id).then(res => {
+      setComments(res)
+    }) : setComments([])
+  }, [props.teacher]);
+
+  useEffect(() => {
+    let suma = 0;
+    let newEstrellas = {...estrellas };
+    console.log(comments)
+    for (let i = 0; i < comments.length; i++) {
+      suma += comments[i].rating;
+      newEstrellas[comments[i].rating] += 1;
+    }
+    setEstrellas(newEstrellas);
+    setPromedio(parseInt(suma/comments.length))
+  }, [comments]);
+
   return (
     <>
     <div className="bg-white">
@@ -45,16 +69,16 @@ export default function Example() {
                   <StarIcon
                     key={rating}
                     className={classNames(
-                      reviews.average > rating ? 'text-yellow-400' : 'text-gray-300',
+                      promedio > rating ? 'text-yellow-400' : 'text-gray-300',
                       'flex-shrink-0 h-5 w-5'
                     )}
                     aria-hidden="true"
                   />
                 ))}
               </div>
-              <p className="sr-only">{reviews.average} out of 5 stars</p>
+              <p className="sr-only">{promedio} out of 5 stars</p>
             </div>
-            <p className="ml-2 text-sm text-gray-900">Based on {reviews.totalCount} reviews</p>
+            <p className="ml-2 text-sm text-gray-900">Basado en {comments.length} reviews</p>
           </div>
 
           <div className="mt-6">
@@ -71,7 +95,7 @@ export default function Example() {
                     <div aria-hidden="true" className="ml-1 flex-1 flex items-center">
                       <StarIcon
                         className={classNames(
-                          count.count > 0 ? 'text-yellow-400' : 'text-gray-300',
+                          estrellas[count.rating] > 0 ? 'text-yellow-400' : 'text-gray-300',
                           'flex-shrink-0 h-5 w-5'
                         )}
                         aria-hidden="true"
@@ -79,35 +103,21 @@ export default function Example() {
 
                       <div className="ml-3 relative flex-1">
                         <div className="h-3 bg-gray-100 border border-gray-200 rounded-full" />
-                        {count.count > 0 ? (
+                        {estrellas[count.rating] > 0 ? (
                           <div
                             className="absolute inset-y-0 bg-yellow-400 border border-yellow-400 rounded-full"
-                            style={{ width: `calc(${count.count} / ${reviews.totalCount} * 100%)` }}
+                            style={{ width: `calc(${estrellas[count.rating]} / ${comments.length} * 100%)` }}
                           />
                         ) : null}
                       </div>
                     </div>
                   </dt>
                   <dd className="ml-3 w-10 text-right tabular-nums text-sm text-gray-900">
-                    {Math.round((count.count / reviews.totalCount) * 100)}%
+                    {Math.round((estrellas[count.rating] / comments.length) * 100)}%
                   </dd>
                 </div>
               ))}
             </dl>
-          </div>
-
-          <div className="mt-10">
-            <h3 className="text-lg font-medium text-gray-900">Share your thoughts</h3>
-            <p className="mt-1 text-sm text-gray-600">
-              If you’ve used this product, share your thoughts with other customers
-            </p>
-
-            <a
-              href="#"
-              className="mt-6 inline-flex w-full bg-white border border-gray-300 rounded-md py-2 px-8 items-center justify-center text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
-            >
-              Write a review
-            </a>
           </div>
         </div>
 
@@ -116,10 +126,10 @@ export default function Example() {
 
           <div className="flow-root">
             <div className="-my-12 divide-y divide-gray-200">
-              {reviews.featured.map((review) => (
+              {comments.map((review) => (
                 <div key={review.id} className="py-12">
                   <div className="flex items-center">
-                    <img src={review.avatarSrc} alt={`${review.author}.`} className="h-12 w-12 rounded-full" />
+                    <img src={review.picture} alt={`${review.author}.`} className="h-12 w-12 rounded-full" />
                     <div className="ml-4">
                       <h4 className="text-sm font-bold text-gray-900">{review.author}</h4>
                       <div className="mt-1 flex items-center">
@@ -140,7 +150,7 @@ export default function Example() {
 
                   <div
                     className="mt-4 space-y-6 text-base italic text-gray-600"
-                    dangerouslySetInnerHTML={{ __html: review.content }}
+                    dangerouslySetInnerHTML={{ __html: review.body }}
                   />
                 </div>
               ))}

@@ -1,11 +1,13 @@
 import urlsApis from "../helpers/urlApis";
 
-export default async function createComment(body, rating, teacher_id) {
+export default async function createComment(body, rating, teacher_id, picture, author) {
     // api
     let data = {
         "body": body,
         "rating": rating,
-        "teacher": teacher_id
+        "teacher": teacher_id,
+        "picture": picture,
+        "author": author
     }
     data = JSON.stringify(data)
     const apiUrl = `${urlsApis("api")}api/comment/`;
