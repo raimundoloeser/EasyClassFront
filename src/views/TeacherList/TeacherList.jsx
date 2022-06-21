@@ -20,7 +20,6 @@ const TeacherList = () => {
         "price_max": "",
         "first_name": "",
     });
-    const [loading, setLoading] = useState(true);
     const [communes, setCommunes] = useState([]);
     const [subjects, setSubjects] = useState([]);
     const [institutions, setInstitutions] = useState([]);
@@ -56,7 +55,6 @@ const TeacherList = () => {
     }, [institutions])
 
     useEffect(() => {
-        setLoading(true);
         getTeachers(values.comunas, values.subjects, values.institutions,
                     values.price_min, values.price_max, values.first_name).then(res => {
             setTeachers(res);
@@ -75,7 +73,6 @@ const TeacherList = () => {
                 setPromedio(newPromedio);
             });
         }
-        setLoading(false);
     }, [teachers])
 
     const handleChange = (prop) => (event, value) => {
@@ -106,7 +103,6 @@ const TeacherList = () => {
     };
 
     console.log(promedio)
-    if (loading) return <CircularProgress />
 
     return (
         <div>
