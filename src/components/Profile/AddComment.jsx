@@ -1,22 +1,13 @@
 import { Fragment, useState } from 'react'
-import {
-  EmojiHappyIcon,
-  EmojiSadIcon,
-  FireIcon,
-  HeartIcon,
-  PaperClipIcon,
-  ThumbUpIcon,
-  XIcon,
-} from '@heroicons/react/solid'
+import { StarIcon, EmojiHappyIcon } from '@heroicons/react/solid'
 import { Listbox, Transition } from '@headlessui/react'
 
 const moods = [
-  { name: 'Excited', value: 'excited', icon: FireIcon, iconColor: 'text-white', bgColor: 'bg-red-500' },
-  { name: 'Loved', value: 'loved', icon: HeartIcon, iconColor: 'text-white', bgColor: 'bg-pink-400' },
-  { name: 'Happy', value: 'happy', icon: EmojiHappyIcon, iconColor: 'text-white', bgColor: 'bg-green-400' },
-  { name: 'Sad', value: 'sad', icon: EmojiSadIcon, iconColor: 'text-white', bgColor: 'bg-yellow-400' },
-  { name: 'Thumbsy', value: 'thumbsy', icon: ThumbUpIcon, iconColor: 'text-white', bgColor: 'bg-blue-500' },
-  { name: 'I feel nothing', value: null, icon: XIcon, iconColor: 'text-gray-400', bgColor: 'bg-transparent' },
+  { name: '1 Estrella', value: 'excited', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-red-500' },
+  { name: '2 Estrella', value: 'loved', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-orange-400' },
+  { name: '3 Estrella', value: 'happy', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-yellow-400' },
+  { name: '4 Estrella', value: 'sad', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-green-300' },
+  { name: '5 Estrella', value: 'thumbsy', icon: StarIcon, iconColor: 'text-white', bgColor: 'bg-green-500' }
 ]
 
 function classNames(...classes) {
@@ -24,7 +15,7 @@ function classNames(...classes) {
 }
 
 export default function Example() {
-  const [selected, setSelected] = useState(moods[5])
+  const [selected, setSelected] = useState(moods[2])
 
   return (
     <div className="flex items-start space-x-4">
@@ -71,7 +62,7 @@ export default function Example() {
                           <span className="flex items-center justify-center">
                             {selected.value === null ? (
                               <span>
-                                <EmojiHappyIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
+                                <StarIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
                                 <span className="sr-only">Add your mood</span>
                               </span>
                             ) : (
