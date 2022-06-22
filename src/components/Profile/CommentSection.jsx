@@ -2,6 +2,7 @@
 import { StarIcon } from '@heroicons/react/solid'
 import Comments from '../../queries/comments';
 import { Fragment, useState, useEffect } from 'react'
+import urlsApis from "../../helpers/urlApis";
 
 const reviews = {
   average: 4,
@@ -131,7 +132,7 @@ export default function CommentSection(props) {
               {comments.map((review) => (
                 <div key={review.id} className="py-12">
                   <div className="flex items-center">
-                    <img src={review.picture} alt={`${review.author}.`} className="h-12 w-12 rounded-full" />
+                    <img src={urlsApis("api") + 'media/' + review.picture} alt={`${review.author}.`} className="h-12 w-12 rounded-full" />
                     <div className="ml-4">
                       <h4 className="text-sm font-bold text-gray-900">{review.author}</h4>
                       <div className="mt-1 flex items-center">
