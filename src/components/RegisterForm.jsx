@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import register from '../queries/register'
 import { default as getCommunes }  from '../queries/communes'
+import { default as getSubjects }  from '../queries/subjects'
+import { default as getInstitutions }  from '../queries/institutions'
+import login from '../queries/login'
+import myInfo from '../queries/myInfo'
+
 import { 
         Alert,
         CircularProgress,
@@ -14,7 +19,7 @@ import {
         TextField,
         Autocomplete,
  } from '@mui/material';
-import { VisibilityOff, Visibility, HowToReg, FileUpload, FormatListNumberedRtlRounded } from '@mui/icons-material';
+import { VisibilityOff, Visibility, HowToReg, FileUpload } from '@mui/icons-material';
 import { Typography } from '@mui/material';
 
 
@@ -25,6 +30,10 @@ const RegisterForm = (props) => {
     const [successMessage, setSuccessMessage] = useState(null)
     const [failureMessage, setFailureMessage] = useState(null)
     const [comunasSelected, setComunasSelected] = useState([])
+    const [subjectsSelected, setSubjectsSelected] = useState([])
+    const [institutionsSelected, setInstitutionsSelected] = useState([])
+    const [subjects, setSubjects] = useState([])
+    const [institutions, setInstitutions] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(null)
     const [values, setValues] = useState({
@@ -54,6 +63,20 @@ const RegisterForm = (props) => {
             setCommunes(res)
         })
     }, [communes])
+
+    useEffect(() => {
+        if (subjects.length !== 0) return
+        getSubjects().then(res => {
+            setSubjects(res)
+        })
+    }, [subjects])
+
+    useEffect(() => {
+        if (institutions.length !== 0) return
+        getInstitutions().then(res => {
+            setInstitutions(res)
+        })
+    }, [institutions])
         
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
@@ -96,6 +119,37 @@ const RegisterForm = (props) => {
                     setFailureMessage(null)
                     // set current user
                     localStorage.setItem('user', JSON.stringify(val))
+                    login(user).then(val => {
+                        if (val) {
+                            if (val.access) {
+                                setSuccessMessage("Usuario ingresado con éxito")
+                                setFailureMessage(null)
+                                setLoading(null)
+                                // set current user
+                                localStorage.setItem('access-token', val.access)
+                                localStorage.setItem('refresh-token', val.refresh)
+                                myInfo().then((val) => {
+                                    localStorage.setItem('user', JSON.stringify(val))
+                                    localStorage.setItem('id', val.id)
+                                    localStorage.setItem('is_student', val.is_student)
+                                })
+                                return val
+                            } else {
+                                setFailureMessage("Usuario o contraseña incorrectos")
+                                setError(val)
+                            }
+                            setLoading(null)
+                            return val
+                        } else {
+                            setLoading(null)
+                            setError('Error al iniciar sesión')
+                        }
+                        return val
+                    }).then( val => {
+                        console.log(val)
+                        if (val.access) {
+                            window.location.href = '/teachers'
+                        }})
                     return val
                 } else {
                     setError(val)
@@ -177,14 +231,20 @@ const RegisterForm = (props) => {
                             <Autocomplete
                                 multiple
                                 freeSolo
-                                value={(!!values.subjects && values.subjects.split(',')) || []}
+                                value={subjectsSelected ? subjectsSelected : null}
                                 id="subjects"
                                 limitTags={3}
-                                options={[]}
+                                options={subjects}
+                                getOptionLabel={(option) => option.name ? option.name : option}
                                 onChange={(event, newValue) => {
-                                    setValues({ ...values, 'subjects': newValue.join(',') });
+                                    setValues({ 
+                                        ...values, 
+                                        'subjects': [newValue.map(function(val) {
+                                            return val.name ? val.name : val;
+                                        })].join(',') 
+                                    });
+                                    setSubjectsSelected(newValue)
                                 }}
-                                getOptionLabel={(option) => option}
                                 renderInput={(params) => <TextField {...params} label="Materias" />}
                                 helpertext={(!!error && !!error.subjects && error.subjects[0]) || undefined}
                             />
@@ -194,14 +254,20 @@ const RegisterForm = (props) => {
                             <Autocomplete
                                 multiple
                                 freeSolo
+                                value={institutionsSelected ? institutionsSelected : null}
                                 id="institutions"
-                                value={(!!values.institutions && values.institutions.split(',')) || []}
                                 limitTags={3}
-                                options={[]}
+                                options={institutions}
+                                getOptionLabel={(option) => option.name ? option.name : option}
                                 onChange={(event, newValue) => {
-                                    setValues({ ...values, 'institutions': newValue.join(',') });
+                                    setValues({ 
+                                        ...values, 
+                                        'institutions': [newValue.map(function(val) {
+                                            return val.name ? val.name : val;
+                                        })].join(',') 
+                                    });
+                                    setInstitutionsSelected(newValue)
                                 }}
-                                getOptionLabel={(option) => option}
                                 renderInput={(params) => <TextField {...params} label="Instituciones" />}
                                 helpertext={(!!error && !!error.institutions && error.institutions[0]) || undefined}
                             />
