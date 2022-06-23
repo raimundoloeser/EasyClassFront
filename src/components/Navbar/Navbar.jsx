@@ -36,9 +36,9 @@ const pagesLogOut = [
   { id: 3, name: 'Student Register', href: '/register/student' },
   { id: 4, name: 'Login', href: '/login' },
   ];
-const teacherSettings = ['Profile', 'Logout'];
+const teacherSettings = ['Profile', 'Editar Perfil', 'Logout'];
 
-const studentSettings = ['Calendario', 'Logout'];
+const studentSettings = ['Calendario', 'Editar Perfil', 'Logout'];
 
 const ResponsiveAppBar = () => {
   const classes = useStyles()
@@ -93,6 +93,9 @@ const ResponsiveAppBar = () => {
       case 'Logout':
         logout()
         window.location.href = '/login'
+        break
+      case 'Editar Perfil':
+        window.location.href = '/editprofile'
         break
       default:
         break;

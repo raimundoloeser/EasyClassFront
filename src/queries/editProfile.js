@@ -8,7 +8,7 @@ export default async function editProfile(params) {
         {
             method: 'PATCH',
             mode: 'cors',
-            body: params,
+            body: JSON.stringify(params),
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage['access-token']
