@@ -31,9 +31,9 @@ const EditProfileForm = (props) => {
     
     const [successMessage, setSuccessMessage] = useState(null)
     const [failureMessage, setFailureMessage] = useState(null)
-    const [comunasSelected, setComunasSelected] = useState(user.comunas.split(",") ?? [])
-    const [subjectsSelected, setSubjectsSelected] = useState(user.subjects.split(",") ?? [])
-    const [institutionsSelected, setInstitutionsSelected] = useState(user.institutions.split(",") ?? [])
+    const [comunasSelected, setComunasSelected] = useState(user.comunas.split(", ") ?? [])
+    const [subjectsSelected, setSubjectsSelected] = useState(user.subjects.split(", ") ?? [])
+    const [institutionsSelected, setInstitutionsSelected] = useState(user.institutions.split(", ") ?? [])
     const [subjects, setSubjects] = useState([])
     const [institutions, setInstitutions] = useState([])
     const [error, setError] = useState(null)
@@ -42,7 +42,7 @@ const EditProfileForm = (props) => {
         "first_name": user.first_name ?? "",
         "last_name": user.last_name ?? "",
         "mail": user.mail ?? "",
-        "password": "",
+        "password": user.password?? "",
         "password2": "",
         "phone": user.phone ?? "",
         "comunas": "",
@@ -96,41 +96,64 @@ const EditProfileForm = (props) => {
         setLoading(true)
         const formData = new FormData();
 
-        formData.append("first_name", values.first_name || '');
-        formData.append("last_name", values.last_name || '');
-        formData.append("mail", values.mail || '');
-        formData.append("password", values.password || '');
-        formData.append("password2", values.password2 || '');
-        formData.append("phone", values.phone || '');
-        formData.append("comunas", values.comunas || '');
-        formData.append("subjects", values.subjects || '');
-        formData.append("institutions", values.institutions || '');
-        formData.append("comunas", values.comunas || '');
-        formData.append("price", values.price || 0);
-        formData.append("description", values.description || '');
-        formData.append("picture", values.picture || null);
-        formData.append("is_teacher", values.is_teacher);
-        formData.append("is_student", values.is_student);
+        if (!values.password) {
+            console.log("entre")
+            setLoading(null)
+            setFailureMessage("Debe ingresar una contraseña")
+        } else {
 
-        
-        editProfile(formData).then(val => {
-            if (val) {
-                if (val.id) {
-                    setSuccessMessage("Perfil editado con éxito")
-                    setLoading(null)
-                    setFailureMessage(null)
-                    // set current user
-                    localStorage.setItem('user', JSON.stringify(val))
-                    return val
-            } 
-            } else {
-                setLoading(null)
-                setError('Error al editar perfil')
+            console.log("VALORES", values)
+            console.log("COMUNAS", comunasSelected)
+            console.log("SUBJECTS", subjectsSelected)
+
+            formData.append("first_name", values.first_name? values.first_name : "");
+            formData.append("last_name", values.last_name || '');
+            formData.append("mail", values.mail || '');
+            formData.append("password", values.password? values.password : user.password);
+            formData.append("password2", values.password2 || '');
+            formData.append("phone", values.phone || '');
+            formData.append("price", values.price || 0);
+            if (user.is_teacher) {
+                formData.append("comunas", comunasSelected? comunasSelected : user.comunas);
+                formData.append("subjects", subjectsSelected? subjectsSelected : user.subjects);
+                formData.append("institutions", institutionsSelected? institutionsSelected : user.institutions);
             }
-        }).then( val => {
-                if (val.access) {
-                    window.location.href = '/'
-                }})
+            formData.append("description", values.description || '');
+            formData.append("is_teacher", values.is_teacher);
+            formData.append("is_student", values.is_student);
+
+            var object = {};
+            formData.forEach(function(value, key){
+                object[key] = value;
+            });
+            var json = JSON.stringify(object);
+
+            console.log('OBJETO', json)
+
+            editProfile(json).then(val => {
+                if (val) {
+                    if (val.id) {
+                        setSuccessMessage("Perfil editado con éxito")
+                        setLoading(null)
+                        setFailureMessage(null)
+                        // set current user
+                        localStorage.setItem('user', JSON.stringify(val))
+                        return val
+                    } else {
+                        setFailureMessage('Error al editar perfil')
+                        setLoading(null)
+                    }
+                } else {
+                    setFailureMessage('Error al editar perfil')
+                    setLoading(null)
+                    return val
+                }
+            }).then( val => {
+                    if (val.access) {
+                        window.location.href = '/'
+                    }
+                })
+        }
     }   
     if (loading) return <CircularProgress />
     return (
@@ -172,12 +195,13 @@ const EditProfileForm = (props) => {
                         helpertext={(!!error && !!error.phone && error.phone[0]) || undefined}
                     />
                 </FormControl>
-                 {user.is_teacher && (
-                     <>
+                    {user.is_teacher && (
+                        <>
                         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.comunas) || undefined}>
                         
                         <Autocomplete
                             multiple
+                            
                             disablePortal
                             value={comunasSelected ? comunasSelected : null}
                             id="comunas"
@@ -254,8 +278,8 @@ const EditProfileForm = (props) => {
                             }}
                             helpertext={(!!error && !!error.precio && error.precio[0]) || undefined}
                         />
-                     </>
-                 )}
+                        </>
+                    )}
                 
                 <TextField
                     error={!!error && !!error.descripcion}
