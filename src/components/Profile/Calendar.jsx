@@ -39,7 +39,7 @@ const Calendar = (props) => {
             setModules(res)
         })
         if (teacher && teacher.id) {
-            setIsNormalUser(JSON.parse(localStorage.user).id !== teacher.id.toString())
+            setIsNormalUser(JSON.parse(localStorage.user).id !== teacher.id)
         }
     }, [teacher])
 
