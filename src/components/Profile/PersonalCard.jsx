@@ -12,11 +12,16 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 const PersonalCard = (props) => {
   const [teacher, setTeacher] = React.useState({});
   const [loading, setLoading] = React.useState(true);
+  const [reserved, setReserved] = React.useState(false);
 
   useEffect(() => {
     props.teacher ? setTeacher(props.teacher) : setTeacher({})
     setLoading(false);
   }, [props.teacher]);
+
+  useEffect(() => {
+    props.reserved ? setReserved(props.reserved) : setReserved(false)
+}, [props.reserved]);
 
   if (loading) return <CircularProgress />
 
@@ -39,7 +44,10 @@ const PersonalCard = (props) => {
               <ListItemIcon>
               <MailIcon />
               </ListItemIcon>
-              <ListItemText primary={!!teacher && teacher.mail} />
+              {reserved ? 
+              <ListItemText primary={!!teacher && teacher.mail} /> :
+              <p>¡Haz una reserva para ver su contacto!</p>
+              }
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -47,7 +55,10 @@ const PersonalCard = (props) => {
               <ListItemIcon>
               <PhoneIcon />
               </ListItemIcon>
-              <ListItemText primary={!!teacher && teacher.phone} />
+              {reserved ? 
+              <ListItemText primary={!!teacher && teacher.phone} /> :
+              <p>¡Haz una reserva para ver su contacto!</p>
+              }
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -55,7 +66,7 @@ const PersonalCard = (props) => {
               <ListItemIcon>
               <AttachMoneyIcon />
               </ListItemIcon>
-              <ListItemText primary={!!teacher && teacher.price} />
+              <ListItemText primary={!!teacher && teacher.price + " / hora"} />
           </ListItemButton>
         </ListItem>
       </List>

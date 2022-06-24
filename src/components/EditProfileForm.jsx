@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import register from '../queries/register'
+import editProfile from '../queries/editProfile'
 import { default as getCommunes }  from '../queries/communes'
 import { default as getSubjects }  from '../queries/subjects'
 import { default as getInstitutions }  from '../queries/institutions'
@@ -24,33 +24,33 @@ import { Typography } from '@mui/material';
 
 
 
-const RegisterForm = (props) => {
-    const isTeacher = props.isTeacher
-    const isStudent = !isTeacher
+const EditProfileForm = (props) => {
+    const user = JSON.parse(localStorage.getItem('user')) || null
+    const [token, setToken] = React.useState(localStorage.getItem('access-token') || null);
+
+    
     const [successMessage, setSuccessMessage] = useState(null)
     const [failureMessage, setFailureMessage] = useState(null)
-    const [comunasSelected, setComunasSelected] = useState([])
-    const [subjectsSelected, setSubjectsSelected] = useState([])
-    const [institutionsSelected, setInstitutionsSelected] = useState([])
+    const [comunasSelected, setComunasSelected] = useState(user.comunas.split(",") ?? [])
+    const [subjectsSelected, setSubjectsSelected] = useState(user.subjects.split(",") ?? [])
+    const [institutionsSelected, setInstitutionsSelected] = useState(user.institutions.split(",") ?? [])
     const [subjects, setSubjects] = useState([])
     const [institutions, setInstitutions] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(null)
     const [values, setValues] = useState({
-        "first_name": "",
-        "last_name": "",
-        "mail": "",
-        "password": "",
-        "password2": "",
-        "phone": "",
+        "first_name": user.first_name ?? "",
+        "last_name": user.last_name ?? "",
+        "mail": user.mail ?? "",
+        "phone": user.phone ?? "",
         "comunas": "",
         "subjects": "",
         "institutions": "",
-        "price": 0,
-        "description": "",
-        "picture": null,
-        "is_teacher": isTeacher,
-        "is_student": isStudent
+        "price": user.price ?? 0,
+        "description": user.description ?? "",
+        "picture": user.picture ?? null,
+        "is_teacher": user.is_teacher,
+        "is_student": user.is_student
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -90,85 +90,68 @@ const RegisterForm = (props) => {
         event.preventDefault();
     };
 
-    const handleSubmit = (user) => {
+    const handleSubmit = (values) => {
         setLoading(true)
         const formData = new FormData();
 
-        formData.append("first_name", user.first_name || '');
-        formData.append("last_name", user.last_name || '');
-        formData.append("mail", user.mail || '');
-        formData.append("password", user.password || '');
-        formData.append("password2", user.password2 || '');
-        formData.append("phone", user.phone || '');
-        formData.append("comunas", user.comunas || '');
-        formData.append("subjects", user.subjects || '');
-        formData.append("institutions", user.institutions || '');
-        formData.append("comunas", user.comunas || '');
-        formData.append("price", user.price || 0);
-        formData.append("description", user.description || '');
-        user.picture && formData.append("picture", user.picture);
-        formData.append("is_teacher", user.is_teacher);
-        formData.append("is_student", user.is_student);
+        console.log("VALORES", values)
+        console.log("COMUNAS", comunasSelected)
+        console.log("SUBJECTS", subjectsSelected)
+        console.log("usercomunas", user.comunas)
 
+        formData.append("first_name", values.first_name? values.first_name : "");
+        formData.append("last_name", values.last_name || '');
+        formData.append("mail", values.mail || '');
+        formData.append("phone", values.phone || '');
+        formData.append("price", values.price || 0);
+        if (user.is_teacher) {
+            formData.append("comunas", values.comunas? values.comunas : user.comunas);
+            formData.append("subjects", subjectsSelected? subjectsSelected : user.subjects);
+            formData.append("institutions", institutionsSelected? institutionsSelected : user.institutions);
+        }
+        formData.append("description", values.description || '');
+        formData.append("is_teacher", values.is_teacher);
+        formData.append("is_student", values.is_student);
 
-        register(formData).then(val => {
+        var object = {};
+        formData.forEach(function(value, key){
+            object[key] = value;
+        });
+        var json = JSON.stringify(object);
+
+        console.log('OBJETO', json)
+        console.log(comunasSelected)
+
+        editProfile(json).then(val => {
             if (val) {
                 if (val.id) {
-                    setSuccessMessage("Usuario creado con éxito")
+                    setSuccessMessage("Perfil editado con éxito")
                     setLoading(null)
                     setFailureMessage(null)
-                    window.location.href = '/login'
                     // set current user
                     localStorage.setItem('user', JSON.stringify(val))
-                    login(user).then(val => {
-                        if (val) {
-                            if (val.access) {
-                                setSuccessMessage("Usuario ingresado con éxito")
-                                setFailureMessage(null)
-                                setLoading(null)
-                                // set current user
-                                localStorage.setItem('access-token', val.access)
-                                localStorage.setItem('refresh-token', val.refresh)
-                                myInfo().then((val) => {
-                                    localStorage.setItem('user', JSON.stringify(val))
-                                    localStorage.setItem('id', val.id)
-                                    localStorage.setItem('is_student', val.is_student)
-                                })
-                                return val
-                            } else {
-                                setFailureMessage("Usuario o contraseña incorrectos")
-                                setError(val)
-                            }
-                            setLoading(null)
-                            return val
-                        } else {
-                            setLoading(null)
-                            setError('Error al iniciar sesión')
-                        }
-                        return val
-                    }).then( val => {
-                        console.log(val)
-                        if (val.access) {
-                            window.location.href = '/teachers'
-                        }})
                     return val
                 } else {
-                    setError(val)
-                    setFailureMessage("Revise los campos ingresados")
-                }
+                    setFailureMessage('Error al editar perfil')
                     setLoading(null)
+                }
             } else {
+                setFailureMessage('Error al editar perfil')
                 setLoading(null)
-                setError('Error al registrar usuario')
+                return val
             }
-        })
+        }).then( val => {
+                if (val.access) {
+                    window.location.href = '/'
+                }
+            })
     }   
     if (loading) return <CircularProgress />
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', textAlign: 'center'  }}>
             <div>
             <Typography fontFamily='sans-serif' variant="h4" component="div" gutterBottom>
-                Registrarse
+                Editar Perfil
             </Typography>
             {!!successMessage && <Alert severity='success'>{successMessage}</Alert>}
             {!!failureMessage && <Alert severity='error'>{failureMessage}</Alert>}
@@ -203,23 +186,24 @@ const RegisterForm = (props) => {
                         helpertext={(!!error && !!error.phone && error.phone[0]) || undefined}
                     />
                 </FormControl>
-                 {isTeacher && (
-                     <>
+                    {user.is_teacher && (
+                        <>
                         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={(!!error && !!error.comunas) || undefined}>
                         
                         <Autocomplete
                             multiple
-                            disablePortal
+                            freesolo
+                            // disablePortal
                             value={comunasSelected ? comunasSelected : null}
                             id="comunas"
                             limitTags={3}
                             options={communes}
-                            getOptionLabel={(option) => option.nombre}
-                            isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
+                            getOptionLabel={(option) => option.nombre ? option.nombre : option}
+                            isOptionEqualToValue={(option, value) => option.nombre === value}
                             onChange={(event, newValue) => {
                                 setValues({ 
                                             ...values, 
-                                            'comunas': [newValue.map(function(val) {return val.nombre;})].join(',') 
+                                            'comunas': [newValue.map(function(val) {return val.nombre ? val.nombre : val;})].join(',') 
                                         });
                                 setComunasSelected(newValue)
                             }}
@@ -285,8 +269,8 @@ const RegisterForm = (props) => {
                             }}
                             helpertext={(!!error && !!error.precio && error.precio[0]) || undefined}
                         />
-                     </>
-                 )}
+                        </>
+                    )}
                 
                 <TextField
                     error={!!error && !!error.descripcion}
@@ -306,55 +290,6 @@ const RegisterForm = (props) => {
                     sx={{ m: 1, width: '25ch' }}
                     helpertext={(!!error && !!error.mail && error.mail[0]) || undefined}
                 />
-                
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                    <OutlinedInput
-                        id="outlined-adornment-password"
-                        error={!!error && !!error.password}
-                        helpertext={(!!error && !!error.password && error.password[0]) || undefined}
-                        type={showPassword ? 'text' : 'password'}
-                        value={values.password}
-                        onChange={handleChange('password')}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            >
-                            {showPassword ?  <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                        label="Password"
-                    />
-                </FormControl>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password2">Confirm Password</InputLabel>
-                    <OutlinedInput
-                        id="outlined-adornment-password2"
-                        type={showPassword ? 'text' : 'password'}
-                        error={!!error && !!error.password2}
-                        helpertext={(!!error && !!error.password2 && error.password2[0]) || undefined}
-                        value={values.password2}
-                        onChange={handleChange('password2')}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            >
-                            {showPassword ?  <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                        label="password2"
-                    />
-                </FormControl>
                 <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
                     <Button 
                         variant="contained" 
@@ -382,10 +317,10 @@ const RegisterForm = (props) => {
                 endIcon={<HowToReg />}
                 sx={{ m: 1, width: '80ch' }}
                 onClick={() => handleSubmit(values)}>
-                Registrarme
+                Editar perfil
             </Button>
         </Box>
       );
 }
 
-export default RegisterForm;
+export default EditProfileForm;

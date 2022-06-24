@@ -54,11 +54,7 @@ const LoginForm = () => {
                     // set current user
                     localStorage.setItem('access-token', val.access)
                     localStorage.setItem('refresh-token', val.refresh)
-                    myInfo().then((val) => {
-                        localStorage.setItem('user', JSON.stringify(val))
-                        localStorage.setItem('id', val.id)
-                        localStorage.setItem('is_student', val.is_student)
-                    })
+                    myInfo()
                     return val
                 } else {
                     setFailureMessage("Usuario o contraseña incorrectos")

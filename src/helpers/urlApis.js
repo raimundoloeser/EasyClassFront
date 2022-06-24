@@ -1,6 +1,6 @@
 const urlsApis = (key) => {
     const urlsDict = {
-        "api": "http://127.0.0.1:8000/",
+        "api": "https://easyclassback.herokuapp.com/",
     }
     return urlsDict[key]
 };

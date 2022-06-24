@@ -1,11 +1,14 @@
 import React, { useState, useEffect} from 'react'
 import './TeacherList.css';
 import { default as getCommunes }  from '../../queries/communes';
+import myInfo from '../../queries/myInfo'
 import { default as getSubjects }  from '../../queries/subjects';
 import { default as getInstitutions }  from '../../queries/institutions';
 import { default as getTeachers }  from '../../queries/teachersList';
 import { TextField, Autocomplete, Slider} from '@mui/material';
 import { default as TeacherCard } from '../../components/TeacherCard';
+import getComments from '../../queries/comments';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const TeacherList = () => {
     const [error, setError] = useState(null)
@@ -23,8 +26,14 @@ const TeacherList = () => {
     const [price, setPrice] = useState([0, 100000]);
     const [firstName, setFirstName] = useState([]);
     const [teachers, setTeachers] = useState([]);
+    const [promedio, setPromedio] = useState({});
 
     useEffect(() => {
+        myInfo().then((val) => {
+            localStorage.setItem('user', JSON.stringify(val))
+            localStorage.setItem('id', val.id)
+            localStorage.setItem('is_student', val.is_student)
+        })
         if (communes.length !== 0) return
         getCommunes().then(res => {
             setCommunes(res)
@@ -49,9 +58,22 @@ const TeacherList = () => {
         getTeachers(values.comunas, values.subjects, values.institutions,
                     values.price_min, values.price_max, values.first_name).then(res => {
             setTeachers(res);
-            console.log(res);
         })
     }, [values])
+
+    useEffect(() => {
+        let newPromedio = {...promedio}
+        for (let index = 0; index < teachers.length; index++) {
+            getComments(teachers[index].id).then(res => {
+                let suma = 0;
+                for (let j = 0; j < res.length; j++) {
+                    suma += res[j].rating;
+                }
+                newPromedio[teachers[index].id] = parseInt(suma / res.length);
+                setPromedio(newPromedio);
+            });
+        }
+    }, [teachers])
 
     const handleChange = (prop) => (event, value) => {
         let new_values = {...values};
@@ -79,6 +101,8 @@ const TeacherList = () => {
         new_values[prop] = event.target.value;
         setValues(new_values);
     };
+
+    console.log(promedio)
 
     return (
         <div>
@@ -188,6 +212,7 @@ const TeacherList = () => {
                                                                     <>
                                                                     <TeacherCard
                                                                     teacher={teacher}
+                                                                    promedio={promedio}
                                                                     />
                                                                     </>
                                                                 );

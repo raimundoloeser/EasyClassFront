@@ -1,13 +1,15 @@
 import urlsApis from "../helpers/urlApis";
 
-export default async function myInfo() {
+export default async function editProfile(params) {
     // api
+    console.log("PARAMS", params)
     const apiUrl = `${urlsApis("api")}api/me/`;
     const fetchResponse = fetch(
         apiUrl,
         {
-            method: 'GET',
+            method: 'PATCH',
             mode: 'cors',
+            body: params,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage['access-token']
@@ -17,8 +19,6 @@ export default async function myInfo() {
         return response.json()
     });
     const returner = await fetchResponse
-    localStorage.setItem("user", JSON.stringify(returner));
-    localStorage.setItem("id", returner.id);
-    localStorage.setItem("is_student", returner.is_student);
+    console.log("EDIT RETURNER", returner)
     return returner
 };

@@ -1,52 +1,38 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react';
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import {
-  Scheduler,
-  WeekView,
-  Appointments,
-  DayView,
-  Toolbar,
-  ViewSwitcher,
-  DateNavigator,
-  TodayButton,
-  AppointmentTooltip,
-  AppointmentForm,
-  ConfirmationDialog
-} from '@devexpress/dx-react-scheduler-material-ui';
-import CircularProgress from '@mui/material/CircularProgress';
+    Scheduler,
+    WeekView,
+    Appointments,
+    DayView,
+    Toolbar,
+    ViewSwitcher,
+    DateNavigator,
+    TodayButton,
+    AppointmentTooltip,
+    AppointmentForm,
+    ConfirmationDialog
+  } from '@devexpress/dx-react-scheduler-material-ui';
+  import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
-import modulesList from '../../queries/modulesList';
-import createModule from '../../queries/createModule';
-import deleteModule from '../../queries/deleteModule';
-import editModule from '../../queries/editModule';
-import createReservation from '../../queries/createReservation';
-import deleteReservation from '../../queries/deleteReservation';
+import modulesListStudent from '../queries/modulesListStudent';
+import createReservation from '../queries/createReservation';
+import deleteReservation from '../queries/deleteReservation';
 
-const Calendar = (props) => {
-    const [teacher, setTeacher] = React.useState({});
-    const [loading, setLoading] = React.useState(true);
+
+const MyCalendar = (props) => {
     const [modules, setModules] = React.useState([])
-    // checkeo si soy el current user
-    const [isNormalUser, setIsNormalUser] = React.useState(true)
 
     useEffect(() => {
-        modulesList(teacher.id).then(res => {
+        modulesListStudent(JSON.parse(localStorage.user).id).then(res => {
             res.forEach(module => {
                 module['startDate'] = new Date(module.date + 'T' + module.start_time)
                 module['endDate'] = new Date(module.date + 'T' + module.end_time)
             })
             setModules(res)
         })
-        if (teacher && teacher.id) {
-            setIsNormalUser(JSON.parse(localStorage.user).id !== teacher.id)
-        }
-    }, [teacher])
-
-    useEffect(() => {
-        props.teacher ? setTeacher(props.teacher) : setTeacher({})
-        setLoading(false);
-    }, [props.teacher]);
+    }, [localStorage])
 
     // obtengo el dia actual
     let currentDate = new Date();
@@ -54,31 +40,6 @@ const Calendar = (props) => {
     let mm = String(currentDate.getMonth() + 1).padStart(2, '0'); //January is 0!
     let yyyy = currentDate.getFullYear();
     currentDate = yyyy + '-' + mm + '-' + dd;
-
-    // manejo el crear, editar y delete horario
-    const commitChanges = (added) => {
-        if (added.added) {
-            let hour_start_time = String(added.added.startDate.getHours()).padStart(2, '0');
-            let minute_start_time = String(added.added.startDate.getMinutes()).padStart(2, '0');
-            let start_time = hour_start_time + ':' + minute_start_time + ':00';
-            let hour_end_time = String(added.added.endDate.getHours()).padStart(2, '0');
-            let minute_end_time = String(added.added.endDate.getMinutes()).padStart(2, '0');
-            let end_time = hour_end_time + ':' + minute_end_time + ':00';
-            let dd = String(added.added.startDate.getDate()).padStart(2, '0');
-            let mm = String(added.added.startDate.getMonth() + 1).padStart(2, '0'); //January is 0!
-            let yyyy = added.added.startDate.getFullYear();
-            let date = yyyy + '-' + mm + '-' + dd;
-            createModule(start_time, end_time, date).then(res => {
-            })
-        } 
-        if (added.deleted) {
-            deleteModule(added.deleted);
-        }
-        if (added.changed) {
-            editModule(added.changed);
-        }
-        window.location.reload();
-    };
 
     // saco y edito componentes inecesarios
     const BoolEditor = (props) => {
@@ -203,71 +164,61 @@ const Calendar = (props) => {
         }
       };
 
-
-    if (loading) return <CircularProgress />
-
     // retorno el calendario 
     return (
         <>
-        <h1 style={{ 'textAlign': 'center' }}>Horario de {teacher.first_name}:</h1>
-            <Paper>
-            <Scheduler
-            data={modules}
-            >
+         <Fragment>
+            <Container maxWidth="lg">
+                <h1 style={{ 'textAlign': 'center' }}>Tu Calendario:</h1>
+                    <Paper>
+                    <Scheduler
+                    data={modules}
+                    >
 
-            <ViewState
-                defaultCurrentDate={currentDate}
-                defaultCurrentViewName="Week"
-            />
+                    <ViewState
+                        defaultCurrentDate={currentDate}
+                        defaultCurrentViewName="Week"
+                    />
 
-            <EditingState
-                onCommitChanges={commitChanges}
-            />
-            <IntegratedEditing />
+                    <EditingState/>
+                    <IntegratedEditing />
 
-            <DayView
-                startDayHour={7}
-                endDayHour={23}
-            />
-            <WeekView startDayHour={7} endDayHour={23} />
+                    <DayView
+                        startDayHour={7}
+                        endDayHour={23}
+                    />
+                    <WeekView startDayHour={7} endDayHour={23} />
 
-            <Toolbar />
-            <DateNavigator />
-            <TodayButton />
-            <ViewSwitcher />
-            <ConfirmationDialog />
-            <Appointments
-            appointmentComponent={Appointment} 
-            />
-            <AppointmentTooltip
-                headerComponent={Header}
-                showCloseButton={!isNormalUser}
-                showOpenButton={!isNormalUser}
-                showDeleteButton={!isNormalUser}
-            />
-            {!isNormalUser
-                ? <AppointmentForm
-                readOnly={isNormalUser}
-                basicLayoutComponent={BasicLayout}
-                booleanEditorComponent={BoolEditor}
-                labelComponent={LabelComponent}
-                textEditorComponent={InputComponent}
-                />
-                : <AppointmentForm
-                readOnly={isNormalUser}
-                visible={false}
-                basicLayoutComponent={BasicLayout}
-                booleanEditorComponent={BoolEditor}
-                labelComponent={LabelComponent}
-                textEditorComponent={InputComponent}
-                />
-            }
-            </Scheduler>
-        </Paper>
-        <br />
-        <br />
+                    <Toolbar />
+                    <DateNavigator />
+                    <TodayButton />
+                    <ViewSwitcher />
+                    <ConfirmationDialog />
+                    <Appointments
+                    appointmentComponent={Appointment} 
+                    />
+                    <AppointmentTooltip
+                        headerComponent={Header}
+                        showCloseButton={false}
+                        showOpenButton={false}
+                        showDeleteButton={false}
+                    />
+                    <AppointmentForm
+                    readOnly={true}
+                    visible={false}
+                    basicLayoutComponent={BasicLayout}
+                    booleanEditorComponent={BoolEditor}
+                    labelComponent={LabelComponent}
+                    textEditorComponent={InputComponent}
+                    />
+                    </Scheduler>
+                </Paper>
+                <br />
+                <br />
+            </Container>
+        </Fragment>
         </>
     )
 }
 
-export default Calendar
+export default MyCalendar;
