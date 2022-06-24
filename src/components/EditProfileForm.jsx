@@ -42,8 +42,6 @@ const EditProfileForm = (props) => {
         "first_name": user.first_name ?? "",
         "last_name": user.last_name ?? "",
         "mail": user.mail ?? "",
-        "password": user.password?? "",
-        "password2": "",
         "phone": user.phone ?? "",
         "comunas": "",
         "subjects": "",
@@ -96,66 +94,57 @@ const EditProfileForm = (props) => {
         setLoading(true)
         const formData = new FormData();
 
-        if (!values.password) {
-            console.log("entre")
-            setLoading(null)
-            setFailureMessage("Debe ingresar una contraseña")
-        } else {
+        console.log("VALORES", values)
+        console.log("COMUNAS", comunasSelected)
+        console.log("SUBJECTS", subjectsSelected)
+        console.log("usercomunas", user.comunas)
 
-            console.log("VALORES", values)
-            console.log("COMUNAS", comunasSelected)
-            console.log("SUBJECTS", subjectsSelected)
-            console.log("usercomunas", user.comunas)
+        formData.append("first_name", values.first_name? values.first_name : "");
+        formData.append("last_name", values.last_name || '');
+        formData.append("mail", values.mail || '');
+        formData.append("phone", values.phone || '');
+        formData.append("price", values.price || 0);
+        if (user.is_teacher) {
+            formData.append("comunas", values.comunas? values.comunas : user.comunas);
+            formData.append("subjects", subjectsSelected? subjectsSelected : user.subjects);
+            formData.append("institutions", institutionsSelected? institutionsSelected : user.institutions);
+        }
+        formData.append("description", values.description || '');
+        formData.append("is_teacher", values.is_teacher);
+        formData.append("is_student", values.is_student);
 
-            formData.append("first_name", values.first_name? values.first_name : "");
-            formData.append("last_name", values.last_name || '');
-            formData.append("mail", values.mail || '');
-            formData.append("password", values.password? values.password : user.password);
-            formData.append("password2", values.password2 || '');
-            formData.append("phone", values.phone || '');
-            formData.append("price", values.price || 0);
-            if (user.is_teacher) {
-                formData.append("comunas", values.comunas? values.comunas : user.comunas);
-                formData.append("subjects", subjectsSelected? subjectsSelected : user.subjects);
-                formData.append("institutions", institutionsSelected? institutionsSelected : user.institutions);
-            }
-            formData.append("description", values.description || '');
-            formData.append("is_teacher", values.is_teacher);
-            formData.append("is_student", values.is_student);
+        var object = {};
+        formData.forEach(function(value, key){
+            object[key] = value;
+        });
+        var json = JSON.stringify(object);
 
-            var object = {};
-            formData.forEach(function(value, key){
-                object[key] = value;
-            });
-            var json = JSON.stringify(object);
+        console.log('OBJETO', json)
+        console.log(comunasSelected)
 
-            console.log('OBJETO', json)
-            console.log(comunasSelected)
-
-            editProfile(json).then(val => {
-                if (val) {
-                    if (val.id) {
-                        setSuccessMessage("Perfil editado con éxito")
-                        setLoading(null)
-                        setFailureMessage(null)
-                        // set current user
-                        localStorage.setItem('user', JSON.stringify(val))
-                        return val
-                    } else {
-                        setFailureMessage('Error al editar perfil')
-                        setLoading(null)
-                    }
+        editProfile(json).then(val => {
+            if (val) {
+                if (val.id) {
+                    setSuccessMessage("Perfil editado con éxito")
+                    setLoading(null)
+                    setFailureMessage(null)
+                    // set current user
+                    localStorage.setItem('user', JSON.stringify(val))
+                    return val
                 } else {
                     setFailureMessage('Error al editar perfil')
                     setLoading(null)
-                    return val
                 }
-            }).then( val => {
-                    if (val.access) {
-                        window.location.href = '/'
-                    }
-                })
-        }
+            } else {
+                setFailureMessage('Error al editar perfil')
+                setLoading(null)
+                return val
+            }
+        }).then( val => {
+                if (val.access) {
+                    window.location.href = '/'
+                }
+            })
     }   
     if (loading) return <CircularProgress />
     return (
@@ -301,55 +290,6 @@ const EditProfileForm = (props) => {
                     sx={{ m: 1, width: '25ch' }}
                     helpertext={(!!error && !!error.mail && error.mail[0]) || undefined}
                 />
-                
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                    <OutlinedInput
-                        id="outlined-adornment-password"
-                        error={!!error && !!error.password}
-                        helpertext={(!!error && !!error.password && error.password[0]) || undefined}
-                        type={showPassword ? 'text' : 'password'}
-                        value={values.password}
-                        onChange={handleChange('password')}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            >
-                            {showPassword ?  <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                        label="Password"
-                    />
-                </FormControl>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password2">Confirm Password</InputLabel>
-                    <OutlinedInput
-                        id="outlined-adornment-password2"
-                        type={showPassword ? 'text' : 'password'}
-                        error={!!error && !!error.password2}
-                        helpertext={(!!error && !!error.password2 && error.password2[0]) || undefined}
-                        value={values.password2}
-                        onChange={handleChange('password2')}
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            >
-                            {showPassword ?  <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                        label="password2"
-                    />
-                </FormControl>
                 <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
                     <Button 
                         variant="contained" 
