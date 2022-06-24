@@ -12,6 +12,7 @@ import Register from './views/Register';
 import TeacherProfile from './views/TeacherProfile';
 import ResponsiveAppBar from './components/Navbar/Navbar';
 import MyCalendar from './views/MyCalendar';
+import EditProfile from './views/EditProfile'
 
 const useStyles = makeStyles(() => ({
   containerApp: {
@@ -37,6 +38,7 @@ const App = () => {
             <Route path="/register/teacher" element={<Register isTeacher={true}/>} />
             <Route path="/register/student" element={<Register isTeacher={false}/>} />
             <Route path="/mycalendar" element={<MyCalendar />} />
+            <Route path="/editprofile" element={<EditProfile />} />
           </Routes>
         </div>
       </ThemeProvider>
