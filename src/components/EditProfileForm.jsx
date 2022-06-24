@@ -31,9 +31,9 @@ const EditProfileForm = (props) => {
     
     const [successMessage, setSuccessMessage] = useState(null)
     const [failureMessage, setFailureMessage] = useState(null)
-    const [comunasSelected, setComunasSelected] = useState(user.comunas.split(", ") ?? [])
-    const [subjectsSelected, setSubjectsSelected] = useState(user.subjects.split(", ") ?? [])
-    const [institutionsSelected, setInstitutionsSelected] = useState(user.institutions.split(", ") ?? [])
+    const [comunasSelected, setComunasSelected] = useState(user.comunas.split(",") ?? [])
+    const [subjectsSelected, setSubjectsSelected] = useState(user.subjects.split(",") ?? [])
+    const [institutionsSelected, setInstitutionsSelected] = useState(user.institutions.split(",") ?? [])
     const [subjects, setSubjects] = useState([])
     const [institutions, setInstitutions] = useState([])
     const [error, setError] = useState(null)
@@ -105,6 +105,7 @@ const EditProfileForm = (props) => {
             console.log("VALORES", values)
             console.log("COMUNAS", comunasSelected)
             console.log("SUBJECTS", subjectsSelected)
+            console.log("usercomunas", user.comunas)
 
             formData.append("first_name", values.first_name? values.first_name : "");
             formData.append("last_name", values.last_name || '');
@@ -114,7 +115,7 @@ const EditProfileForm = (props) => {
             formData.append("phone", values.phone || '');
             formData.append("price", values.price || 0);
             if (user.is_teacher) {
-                formData.append("comunas", comunasSelected? comunasSelected : user.comunas);
+                formData.append("comunas", values.comunas? values.comunas : user.comunas);
                 formData.append("subjects", subjectsSelected? subjectsSelected : user.subjects);
                 formData.append("institutions", institutionsSelected? institutionsSelected : user.institutions);
             }
@@ -129,6 +130,7 @@ const EditProfileForm = (props) => {
             var json = JSON.stringify(object);
 
             console.log('OBJETO', json)
+            console.log(comunasSelected)
 
             editProfile(json).then(val => {
                 if (val) {
@@ -201,18 +203,18 @@ const EditProfileForm = (props) => {
                         
                         <Autocomplete
                             multiple
-                            
-                            disablePortal
+                            freesolo
+                            // disablePortal
                             value={comunasSelected ? comunasSelected : null}
                             id="comunas"
                             limitTags={3}
                             options={communes}
-                            getOptionLabel={(option) => option.nombre}
-                            isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
+                            getOptionLabel={(option) => option.nombre ? option.nombre : option}
+                            isOptionEqualToValue={(option, value) => option.nombre === value}
                             onChange={(event, newValue) => {
                                 setValues({ 
                                             ...values, 
-                                            'comunas': [newValue.map(function(val) {return val.nombre;})].join(',') 
+                                            'comunas': [newValue.map(function(val) {return val.nombre ? val.nombre : val;})].join(',') 
                                         });
                                 setComunasSelected(newValue)
                             }}
